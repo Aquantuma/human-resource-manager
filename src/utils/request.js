@@ -18,14 +18,20 @@ service.interceptors.response.use(
     // 1. 请求成功
     console.log('这是网络层面的成功')
     console.log(res)
-    const { success } = res.data
+    const { success, message, data } = res.data
     if (success) {
       // 1.1 数据成功 -> 返回数据
       console.log('数据请求成功')
-      return res
+      // 这里不直接返回res
+      // 而是从res.data中解构处data （res.data.data）
+      return data
     } else {
       // 1.2 数据失败 -> 提示错误+停止请求
       console.log('数据请求失败')
+      // 弹窗提示错误
+      Message.error(message)
+      // 拒绝掉当前的请求
+      return Promise.reject(new Error(message))
     }
   },
   err => {

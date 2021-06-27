@@ -16,8 +16,12 @@ const mutations = {
 }
 const actions = {
   async handleLogin(store, data) {
-    const token = (await login(data)).data.data
-    store.commit('setToken', token)
+    // 由于在拦截器中解构了 res.data.data
+    // 所以后面我们使用的所有res其实就是真正的数据
+    // 不用再 res.data.data
+    const res = await login(data)
+    console.log(res)
+    store.commit('setToken', res)
   }
 }
 
