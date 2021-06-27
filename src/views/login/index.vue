@@ -9,15 +9,15 @@
         </h3>
       </div>
 
-      <el-form-item prop="username">
+      <el-form-item prop="mobile">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
         <el-input
-          ref="username"
-          v-model="loginForm.username"
+          ref="mobile"
+          v-model="loginForm.mobile"
           placeholder="请输入手机号"
-          name="username"
+          name="mobile"
           type="text"
           tabindex="1"
           auto-complete="on"
@@ -58,7 +58,7 @@
 
 <script>
 import { validMobilenum } from '@/utils/validate'
-
+import { login } from '@/api/user'
 export default {
   name: 'Login',
   data() {
@@ -72,11 +72,11 @@ export default {
     }
     return {
       loginForm: {
-        username: '13000000002',
+        mobile: '13800000003',
         password: '123456'
       },
       loginRules: {
-        username: [
+        mobile: [
           { required: true, trigger: 'blur', message: '请输入用户名' },
           { validator: validateUsername, trigger: 'blur' }
         ],
@@ -109,21 +109,9 @@ export default {
         this.$refs.password.focus()
       })
     },
-    handleLogin() {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
-            this.loading = false
-          }).catch(() => {
-            this.loading = false
-          })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
+    async handleLogin() {
+      const res = await login(this.loginForm)
+      console.log(res)
     }
   }
 }
