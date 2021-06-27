@@ -58,7 +58,7 @@
 
 <script>
 import { validMobilenum } from '@/utils/validate'
-import { login } from '@/api/user'
+// import { login } from '@/api/user'
 export default {
   name: 'Login',
   data() {
@@ -109,9 +109,8 @@ export default {
         this.$refs.password.focus()
       })
     },
-    async handleLogin() {
-      const res = await login(this.loginForm)
-      console.log(res)
+    handleLogin() {
+      this.$store.dispatch('user/handleLogin', this.loginForm)
     }
   }
 }
