@@ -44,7 +44,7 @@
         </span>
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" class="loginBtn" @click.native.prevent="handleLogin">Login</el-button>
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" class="loginBtn" @click.native.prevent="handleLogin">登录</el-button>
 
       <!-- 修改显示的提示文本和登录文本 -->
       <div class="tips">
@@ -111,10 +111,14 @@ export default {
     },
     async handleLogin() {
       try {
+        // 验证表单
+        await this.$refs.loginForm.validate()
         await this.$store.dispatch('user/handleLogin', this.loginForm)
+        // 提示登录成功
+        this.$message.success('登录成功')
+        this.$router.push('/')
       } catch (error) {
         console.log(error)
-        console.log('登录页调用actions失败')
       }
     }
   }
