@@ -1,13 +1,17 @@
 import { login } from '@/api/user'
+import { setToken, getToken } from '@/utils/auth'
 const state = {
-  token: null
+  token: getToken()
 }
 const mutations = {
   setToken(state, data) {
     state.token = data
+    // 同时存储token
+    setToken(data)
   },
   removeToken(state) {
     state.token = null
+    setToken(null)
   }
 }
 const actions = {
