@@ -18,3 +18,9 @@ export function validUsername(str) {
   const valid_map = ['admin', 'editor']
   return valid_map.indexOf(str.trim()) >= 0
 }
+
+// 用户名（手机号）的正则校验
+export function validMobilenum(str) {
+  const pattern = /^1[23578]\d{9}$/
+  return pattern.test(str)
+}
