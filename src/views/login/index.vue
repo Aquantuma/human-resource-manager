@@ -109,8 +109,13 @@ export default {
         this.$refs.password.focus()
       })
     },
-    handleLogin() {
-      this.$store.dispatch('user/handleLogin', this.loginForm)
+    async handleLogin() {
+      try {
+        await this.$store.dispatch('user/handleLogin', this.loginForm)
+      } catch (error) {
+        console.log(error)
+        console.log('登录页调用actions失败')
+      }
     }
   }
 }
