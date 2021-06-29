@@ -1,5 +1,5 @@
 import { login, getUserInfo, getUserDetail } from '@/api/user'
-import { setToken, getToken } from '@/utils/auth'
+import { setToken, getToken, removeToken } from '@/utils/auth'
 const state = {
   token: getToken(),
   userInfo: {}
@@ -11,8 +11,10 @@ const mutations = {
     setToken(data)
   },
   removeToken(state) {
-    state.token = null
-    setToken(null)
+    // 清空state中的token
+    state.token = ''
+    // 移除cookies中的token
+    removeToken()
   },
   // 设置用户信息
   setUserInfo(state, data) {
@@ -40,6 +42,12 @@ const actions = {
     const data = { ...res, ...resDetail }
     // 将合并后的数据传递给state
     store.commit('setUserInfo', data)
+  },
+  logout(store) {
+    // 清空state和cookies中的token
+    store.commit('removeToken')
+    // 清空state中的用户信息
+    store.commit('removeUserInfo')
   }
 }
 
