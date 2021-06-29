@@ -26,7 +26,7 @@ import store from '@/store/index'
 }) */
 
 // 添加导航守卫 方法二
-router.beforeEach((to, from, next) => {
+router.beforeEach(async(to, from, next) => {
   const token = store.getters.token
   //   创建白名单
   const whiteList = ['/login', '/404']
@@ -37,6 +37,11 @@ router.beforeEach((to, from, next) => {
 
   //   有token + 打开其它页面 => 放行
   if (token && to.path !== '/login') {
+    // 只有在已登录且访问其它页面时才进行用户信息的获取
+    // 且用户信息保存在state状态后就不再重复获取了
+    if (!store.getters.userId) {
+      await store.dispatch('user/handleUserInfo')
+    }
     next()
   }
 

@@ -1,4 +1,4 @@
-import { login, getUserInfo } from '@/api/user'
+import { login, getUserInfo, getUserDetail } from '@/api/user'
 import { setToken, getToken } from '@/utils/auth'
 const state = {
   token: getToken(),
@@ -35,7 +35,11 @@ const actions = {
   },
   async handleUserInfo(store) {
     const res = await getUserInfo()
-    store.commit('setUserInfo', res)
+    const resDetail = await getUserDetail(res.userId)
+    // 将用户和所登录员工的信息合并
+    const data = { ...res, ...resDetail }
+    // 将合并后的数据传递给state
+    store.commit('setUserInfo', data)
   }
 }
 

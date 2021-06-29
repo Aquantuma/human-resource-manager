@@ -9,10 +9,17 @@ export function login(data) {
 }
 
 // 获取用户资料的接口
-export function getUserInfo(data) {
+export function getUserInfo() {
   return request({
     url: '/sys/profile',
-    method: 'post',
-    data
+    method: 'post'
+  })
+}
+
+// 获取员工基本信息
+export function getUserDetail(id) {
+  return request({
+    url: `/sys/user/${id}`,
+    method: 'get'
   })
 }
