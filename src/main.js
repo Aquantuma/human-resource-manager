@@ -33,17 +33,11 @@ Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明
 // Vue.use(ElementUI)
 
-// 全局自定义指令
-Vue.directive('imgerr', {
-  inserted: (el, option) => {
-    // 当img标签的src属性为空时传递赋值
-    el.src = el.src || option.value
-    // 监听img元素的错误事件
-    el.onerror = () => {
-      console.log(el.src)
-      el.src = option.value
-    }
-  }
+// 引入自定义指令的独立封装
+import * as directives from '@/directives'
+Object.keys(directives).forEach(key => {
+  console.log(key, directives[key])
+  Vue.directive(key, directives[key])
 })
 
 Vue.config.productionTip = false
