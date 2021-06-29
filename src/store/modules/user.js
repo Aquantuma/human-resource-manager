@@ -1,7 +1,8 @@
-import { login } from '@/api/user'
+import { login, getUserInfo } from '@/api/user'
 import { setToken, getToken } from '@/utils/auth'
 const state = {
-  token: getToken()
+  token: getToken(),
+  userInfo: {}
 }
 const mutations = {
   setToken(state, data) {
@@ -12,6 +13,15 @@ const mutations = {
   removeToken(state) {
     state.token = null
     setToken(null)
+  },
+  // 设置用户信息
+  setUserInfo(state, data) {
+    // 使用浅拷贝的方式进行赋值
+    state.userInfo = { ...data }
+  },
+  // 删除用户信息
+  removeUserInfo(state) {
+    state.userInfo = {}
   }
 }
 const actions = {
@@ -22,6 +32,10 @@ const actions = {
     const res = await login(data)
     console.log(res)
     store.commit('setToken', res)
+  },
+  async handleUserInfo(store) {
+    const res = await getUserInfo()
+    store.commit('setUserInfo', res)
   }
 }
 
