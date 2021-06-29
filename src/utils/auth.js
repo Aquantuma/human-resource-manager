@@ -13,3 +13,16 @@ export function setToken(token) {
 export function removeToken() {
   return Cookies.remove(TokenKey)
 }
+
+// 设置时间戳的变量名
+const TimeKey = 'ihrm-timestamp'
+
+// 设置时间戳
+export function setTimeStamp() {
+  return Cookies.set(TimeKey, new Date().getTime())
+}
+
+// 获取时间戳
+export function getTimeStamp() {
+  return Cookies.get(TimeKey)
+}

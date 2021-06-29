@@ -1,7 +1,17 @@
 import axios from 'axios'
 import store from '@/store/index'
+import router from '@/router/index'
+import { getTimeStamp } from '@/utils/auth'
 
 import { Message } from 'element-ui'
+
+// 创建token有效期的检验函数
+const checkTimeOut = () => {
+  const now = new Date().getTime()
+  // 设置token有效期为2小时
+  const timeOut = 1000 * 3600 * 2
+  return (now - getTimeStamp()) > timeOut
+}
 
 // 创建axios实例
 const service = axios.create({
@@ -15,6 +25,15 @@ service.interceptors.request.use(
   config => {
     const token = store.getters.token
     if (token) {
+      if (checkTimeOut()) {
+        console.log('token已失效')
+        // 调用actions中的退出登录方法
+        store.dispatch('user/logout')
+        // 跳转到登录页
+        router.push('/login')
+        // 停止掉当前的请求
+        return Promise.reject(new Error('登录有效期已过，请重新登录'))
+      }
       // 给请求头添加token验证
       config.headers.Authorization = `Bearer ${token}`
     }

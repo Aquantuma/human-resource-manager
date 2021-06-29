@@ -1,5 +1,5 @@
 import { login, getUserInfo, getUserDetail } from '@/api/user'
-import { setToken, getToken, removeToken } from '@/utils/auth'
+import { setToken, getToken, removeToken, setTimeStamp } from '@/utils/auth'
 const state = {
   token: getToken(),
   userInfo: {}
@@ -34,6 +34,8 @@ const actions = {
     const res = await login(data)
     console.log(res)
     store.commit('setToken', res)
+    // 登录成功储存当前时间戳
+    setTimeStamp()
   },
   async handleUserInfo(store) {
     const res = await getUserInfo()

@@ -4,7 +4,7 @@ export const imgerr = {
     el.src = el.src || option.value
     // 监听img元素的错误事件
     el.onerror = () => {
-      console.log(el.src)
+      // console.log(el.src)
       el.src = option.value
     }
   }
