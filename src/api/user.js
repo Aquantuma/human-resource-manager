@@ -8,3 +8,11 @@ export function login(data) {
   })
 }
 
+// 获取用户资料的接口
+export function getUserInfo(data) {
+  return request({
+    url: '/sys/profile',
+    method: 'post',
+    data
+  })
+}

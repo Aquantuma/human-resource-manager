@@ -1,4 +1,5 @@
 import axios from 'axios'
+import store from '@/store/index'
 
 import { Message } from 'element-ui'
 
@@ -10,7 +11,20 @@ const service = axios.create({
 })
 
 // 请求拦截器
-service.interceptors.request.use()
+service.interceptors.request.use(
+  config => {
+    const token = store.getters.token
+    if (token) {
+      // 给请求头添加token验证
+      config.headers.Authorization = `Bearer ${token}`
+    }
+    // 必须返回配置
+    return config
+  },
+  error => {
+    return Promise.reject(error)
+  }
+)
 
 // 相应拦截器 相应有三种情况
 service.interceptors.response.use(
