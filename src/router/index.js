@@ -64,10 +64,36 @@ export const constantRoutes = [
   { path: '*', redirect: '/404', hidden: true }
 ]
 
+// 动态路由数组
+// 这里将所有的路由模块引入形成更数组
+// 技术本质上跟上面的静态路由没有区别
+// 只是因为业务管理方便, 所以会切分成两个数组
+// 不过最好使用的时候,还是会合并起来的
+// (目前全部人都能看所有页面, 没有权限问题)
+// 引入多个模块的规则
+import approvals from './modules/approvals'
+import attendances from './modules/attendances'
+import departments from './modules/departments'
+import employees from './modules/employees'
+import permission from './modules/permission'
+import salarys from './modules/salarys'
+import setting from './modules/setting'
+import social from './modules/social'
+export const asyncRoutes = [
+  approvals,
+  attendances,
+  departments,
+  employees,
+  permission,
+  salarys,
+  setting,
+  social
+]
+
 const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes
+  routes: [...constantRoutes, ...asyncRoutes]
 })
 
 const router = createRouter()
