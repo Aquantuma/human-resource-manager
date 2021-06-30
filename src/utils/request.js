@@ -71,6 +71,13 @@ service.interceptors.response.use(
     // 2. 请求失败 -> 提示错误+停止请求
     console.log('这是网络层面的失败')
     console.dir(err)
+    // 后端token失效的被动处理
+    // 断网、服务器崩溃也是这里处理的
+    // 条件需写得详细，防止err里面没有response的情况报错
+    if (err.response && err.response.data && err.response.data.code === 10002) {
+      store.dispatch('user/logout')
+      router.push('/login')
+    }
     // 弹出窗告诉用户
     Message.error(err.message)
     // 接着需要放行（报错）
