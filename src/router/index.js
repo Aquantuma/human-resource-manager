@@ -81,10 +81,10 @@ import setting from './modules/setting'
 import social from './modules/social'
 export const asyncRoutes = [
   approvals,
-  attendances,
   departments,
   employees,
   permission,
+  attendances,
   salarys,
   setting,
   social
