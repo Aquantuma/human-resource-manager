@@ -1,65 +1,79 @@
 <template>
-  <div class="test">
-    <h1>登录</h1>
-    <el-form :model="loginForm" :rules="loginRules">
-      <el-form-item label="用户名" prop="username">
-        <el-input v-model="loginForm.username" type="text" />
-      </el-form-item>
-      <el-form-item label="密码" prop="password">
-        <el-input v-model="loginForm.password" type="password" />
-      </el-form-item>
-      <el-form-item label="确认密码" prop="checkPassword">
-        <el-input v-model="loginForm.checkPassword" type="password" />
-      </el-form-item>
-    </el-form>
+  <div>
+    <el-tree
+      :data="treeList"
+      :default-expand-all="true"
+      :props="{ label: 'name' }"
+    />
   </div>
 </template>
 
 <script>
-import { validMobilenum } from '@/utils/validate'
 export default {
   data() {
-    const validateMobile = (rule, value, callback) => {
-      const isValid = validMobilenum(value)
-      if (isValid) {
-        callback()
-      } else {
-        callback(new Error('请输入有效的手机号'))
-      }
-    }
-    const validCheckPassword = (rule, value, callback) => {
-      // console.log(rule, value, callback)
-      const isValid = value === this.loginForm.password
-      if (isValid) {
-        callback()
-      } else {
-        callback(new Error('两次输入的密码必须一致'))
-      }
-    }
     return {
-      loginForm: {
-        username: '',
-        password: '',
-        checkPassword: ''
-      },
-      loginRules: {
-        username: [
-          { required: true, message: '用户名不能为空', trigger: 'blur' },
-          { validator: validateMobile, trigger: 'blur' }
-        ],
-        password: [
-          { required: true, message: '密码不能为空', trigger: 'blur' }
-        ],
-        checkPassword: [
-          { required: true, message: '校验密码不能为空', trigger: 'blur' },
-          { validator: validCheckPassword, trigger: 'blur' }
-        ]
-      }
+      treeList: [
+        {
+          id: 1,
+          name: '服装',
+          children: [
+            {
+              id: 5,
+              name: '男装'
+            },
+            {
+              id: 6,
+              name: '女装'
+            }
+          ]
+        },
+        {
+          id: 2,
+          name: '数码',
+          children: [
+            {
+              id: 7,
+              name: '电脑'
+            },
+            {
+              id: 8,
+              name: '手机'
+            }
+          ]
+        },
+        {
+          id: 3,
+          name: '健康',
+          children: [
+            {
+              id: 9,
+              name: '蛋白粉'
+            },
+            {
+              id: 10,
+              name: '维生素'
+            }
+          ]
+        },
+        {
+          id: 4,
+          name: '餐饮',
+          children: [
+            {
+              id: 11,
+              name: '牛奶'
+            },
+            {
+              id: 12,
+              name: '面包'
+            }
+          ]
+        }
+      ]
     }
   }
 }
 </script>
 
-<style lang="scss" scoped>
-
+<style>
 </style>
