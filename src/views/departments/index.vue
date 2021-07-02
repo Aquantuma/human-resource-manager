@@ -3,33 +3,7 @@
     <div class="app-container">
       <el-card class="tree-card">
         <!-- 用了一个行列布局 -->
-        <el-row
-          type="flex"
-          justify="space-between"
-          align="middle"
-          style="height: 40px"
-        >
-          <el-col>
-            <strong><i class="el-icon-s-home" />
-              江苏传智播客教育科技股份有限公司</strong>
-          </el-col>
-          <el-col :span="4">
-            <el-row type="flex" justify="end">
-              <!-- 两个内容 -->
-              <el-col>负责人</el-col>
-              <el-col>
-                <!-- 下拉菜单 element -->
-                <el-dropdown>
-                  <span> 操作<i class="el-icon-arrow-down" /> </span>
-                  <!-- 下拉菜单 -->
-                  <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item>添加子部门</el-dropdown-item>
-                  </el-dropdown-menu>
-                </el-dropdown>
-              </el-col>
-            </el-row>
-          </el-col>
-        </el-row>
+        <TreeTools :tree-data="company" :is-title="true" />
         <hr>
         <el-tree
           :data="treeList"
@@ -37,32 +11,7 @@
           :props="{ label: 'name' }"
         >
           <template #default="scope">
-            <el-row
-              type="flex"
-              justify="space-between"
-              align="middle"
-              style="height: 40px; width: 100%"
-            >
-              <el-col>
-                <span>{{ scope.data.name }}</span>
-              </el-col>
-              <el-col :span="4">
-                <el-row type="flex" justify="end">
-                  <!-- 两个内容 -->
-                  <el-col>{{ scope.data.manager }}</el-col>
-                  <el-col>
-                    <!-- 下拉菜单 element -->
-                    <el-dropdown>
-                      <span> 操作<i class="el-icon-arrow-down" /> </span>
-                      <!-- 下拉菜单 -->
-                      <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item>添加子部门</el-dropdown-item>
-                      </el-dropdown-menu>
-                    </el-dropdown>
-                  </el-col>
-                </el-row>
-              </el-col>
-            </el-row>
+            <TreeTools :tree-data="scope.data" :is-title="false" />
           </template>
         </el-tree>
       </el-card>
@@ -71,9 +20,17 @@
 </template>
 
 <script>
+import TreeTools from './components/tree-tools.vue'
 export default {
+  components: {
+    TreeTools
+  },
   data() {
     return {
+      company: {
+        name: '江苏传智播客教育科技股份有限公司',
+        manager: '负责人'
+      },
       treeList: [
         {
           id: 1,
@@ -98,7 +55,7 @@ export default {
           name: '技术部',
           manager: '孙权',
           children: [
-            { id: 9, name: 'JAVA', manager: '周瑜' },
+            { id: 9, name: 'Java', manager: '周瑜' },
             { id: 10, name: '前端', manager: '陆逊' }
           ]
         },
