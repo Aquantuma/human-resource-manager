@@ -1,74 +1,45 @@
 <template>
   <div>
-    <el-tree
-      :data="treeList"
-      :default-expand-all="true"
-      :props="{ label: 'name' }"
-    />
+    <h1>插槽测试页</h1>
+    <myComponent :mydata="list">
+      <!-- 插槽旧版语法 -->
+      <!-- <div slot="before" slot-scope="scope">
+        姓名：{{ scope.data.name }}
+      </div>
+      <template slot="after" slot-scope="scope">
+        <div>
+          年龄：{{ scope.data.age }}
+        </div>
+      </template>
+      <div slot="default" slot-scope="scope">
+        城市：{{ scope.data.city }}
+      </div> -->
+
+      <!-- 插槽新版语法 -->
+      <template v-slot:before="scope">
+        姓名：{{ scope.data.name }}
+      </template>
+      <template #after="scope">
+        年龄：{{ scope.data.age }}
+      </template>
+      <template #default="scope">
+        城市：{{ scope.data.city }}
+      </template>
+    </myComponent>
   </div>
 </template>
 
 <script>
+import myComponent from './components/myComponent.vue'
 export default {
+  components: {
+    myComponent
+  },
   data() {
     return {
-      treeList: [
-        {
-          id: 1,
-          name: '服装',
-          children: [
-            {
-              id: 5,
-              name: '男装'
-            },
-            {
-              id: 6,
-              name: '女装'
-            }
-          ]
-        },
-        {
-          id: 2,
-          name: '数码',
-          children: [
-            {
-              id: 7,
-              name: '电脑'
-            },
-            {
-              id: 8,
-              name: '手机'
-            }
-          ]
-        },
-        {
-          id: 3,
-          name: '健康',
-          children: [
-            {
-              id: 9,
-              name: '蛋白粉'
-            },
-            {
-              id: 10,
-              name: '维生素'
-            }
-          ]
-        },
-        {
-          id: 4,
-          name: '餐饮',
-          children: [
-            {
-              id: 11,
-              name: '牛奶'
-            },
-            {
-              id: 12,
-              name: '面包'
-            }
-          ]
-        }
+      list: [
+        { name: '张三', age: 20, city: '广州' },
+        { name: '李四', age: 22, city: '深圳' }
       ]
     }
   }
@@ -76,4 +47,5 @@ export default {
 </script>
 
 <style>
+
 </style>
