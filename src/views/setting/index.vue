@@ -30,7 +30,7 @@
               align="middle"
               style="height: 60px"
             >
-              <el-pagination />
+              <el-pagination background layout="prev,pager,next" :total="page.total" :page-size="page.pagesize" @current-change="changePage" />
             </el-row>
           </el-tab-pane>
           <el-tab-pane label="公司信息">
@@ -71,7 +71,8 @@ export default {
       rolesList: [],
       page: {
         page: 1,
-        pagesize: 2
+        pagesize: 2,
+        total: 0
       }
     }
   },
@@ -88,8 +89,14 @@ export default {
       this.formData = res
     },
     async handleRolesList() {
-      const { rows } = await getRolesList(this.page)
+      const { rows, total } = await getRolesList(this.page)
       this.rolesList = rows
+      this.page.total = total
+    },
+    changePage(val) {
+      console.log(val)
+      this.page.page = val
+      this.handleRolesList()
     }
   }
 }
