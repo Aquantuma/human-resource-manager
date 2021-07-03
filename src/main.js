@@ -36,7 +36,7 @@ Vue.use(ElementUI, { locale })
 // 引入自定义指令的独立封装
 import * as directives from '@/directives'
 Object.keys(directives).forEach(key => {
-  console.log(key, directives[key])
+  // console.log(key, directives[key])
   Vue.directive(key, directives[key])
 })
 

@@ -13,14 +13,14 @@
               >新增角色</el-button>
             </el-row>
             <!-- 表格 -->
-            <el-table>
-              <el-table-column label="序号" width="120" />
-              <el-table-column label="名称" width="240" />
-              <el-table-column label="描述" />
+            <el-table :data="rolesList" border>
+              <el-table-column label="序号" width="120" type="index" />
+              <el-table-column label="名称" width="240" prop="name" />
+              <el-table-column label="描述" prop="description" />
               <el-table-column label="操作">
                 <el-button size="small" type="success">分配权限</el-button>
-                <el-button size="small" type="success">编辑</el-button>
-                <el-button size="small" type="success">删除</el-button>
+                <el-button size="small" type="primary">编辑</el-button>
+                <el-button size="small" type="danger">删除</el-button>
               </el-table-column>
             </el-table>
             <!-- 分页组件 -->
@@ -42,16 +42,16 @@
             />
             <el-form label-width="120px" style="margin-top:50px">
               <el-form-item label="公司名称">
-                <el-input disabled style="width:400px" />
+                <el-input v-model="formData.name" disabled style="width:400px" />
               </el-form-item>
               <el-form-item label="公司地址">
-                <el-input disabled style="width:400px" />
+                <el-input v-model="formData.companyAddress" disabled style="width:400px" />
               </el-form-item>
               <el-form-item label="公司邮箱">
-                <el-input disabled style="width:400px" />
+                <el-input v-model="formData.mailbox" disabled style="width:400px" />
               </el-form-item>
               <el-form-item label="备注">
-                <el-input type="textarea" :rows="3" disabled style="width:400px" />
+                <el-input v-model="formData.remarks" type="textarea" :rows="3" disabled style="width:400px" />
               </el-form-item>
             </el-form>
           </el-tab-pane>
@@ -62,7 +62,37 @@
 </template>
 
 <script>
-export default {}
+import { getCompanyInfo, getRolesList } from '@/api/setting'
+import { mapGetters } from 'vuex'
+export default {
+  data() {
+    return {
+      formData: {},
+      rolesList: [],
+      page: {
+        page: 1,
+        pagesize: 2
+      }
+    }
+  },
+  computed: {
+    ...mapGetters(['companyId'])
+  },
+  created() {
+    this.handleComanyInfo()
+    this.handleRolesList()
+  },
+  methods: {
+    async handleComanyInfo() {
+      const res = await getCompanyInfo(this.companyId)
+      this.formData = res
+    },
+    async handleRolesList() {
+      const { rows } = await getRolesList(this.page)
+      this.rolesList = rows
+    }
+  }
+}
 </script>
 
 <style>
