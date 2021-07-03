@@ -16,3 +16,11 @@ export const getRolesList = (params) => {
     params
   })
 }
+
+// 根据id删除角色
+export const delRoleItem = (id) => {
+  return request({
+    url: `/sys/role/${id}`,
+    method: 'delete'
+  })
+}

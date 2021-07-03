@@ -18,9 +18,11 @@
               <el-table-column label="名称" width="240" prop="name" />
               <el-table-column label="描述" prop="description" />
               <el-table-column label="操作">
-                <el-button size="small" type="success">分配权限</el-button>
-                <el-button size="small" type="primary">编辑</el-button>
-                <el-button size="small" type="danger">删除</el-button>
+                <template #default="scope">
+                  <el-button size="small" type="success">分配权限</el-button>
+                  <el-button size="small" type="primary">编辑</el-button>
+                  <el-button size="small" type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
+                </template>
               </el-table-column>
             </el-table>
             <!-- 分页组件 -->
@@ -62,7 +64,7 @@
 </template>
 
 <script>
-import { getCompanyInfo, getRolesList } from '@/api/setting'
+import { getCompanyInfo, getRolesList, delRoleItem } from '@/api/setting'
 import { mapGetters } from 'vuex'
 export default {
   data() {
@@ -97,6 +99,24 @@ export default {
       console.log(val)
       this.page.page = val
       this.handleRolesList()
+    },
+    async handleDelete(id) {
+      try {
+        // 二次校验
+        await this.$confirm('是否删除该条角色数据？', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+        // 提交删除请求
+        await delRoleItem(id)
+        // 重新加载角色数据
+        this.handleRolesList()
+        // 提示删除成功
+        this.$message.success('删除完毕')
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 }
