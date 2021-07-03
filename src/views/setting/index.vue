@@ -60,8 +60,8 @@
           </el-tab-pane>
         </el-tabs>
       </el-card>
-      <el-dialog :title="dialogTitle" :visible.sync="showDialog">
-        <el-form ref="roleFrom" :model="roleForm" label-width="120px" :rules="formRules">
+      <el-dialog :title="dialogTitle" :visible.sync="showDialog" @close="btnCancel">
+        <el-form ref="roleForm" :model="roleForm" label-width="120px" :rules="formRules">
           <el-form-item label="角色名称" prop="name">
             <el-input v-model="roleForm.name" autocomplete="off" />
           </el-form-item>
@@ -79,7 +79,7 @@
 </template>
 
 <script>
-import { getCompanyInfo, getRolesList, delRoleItem, getRoleDetail } from '@/api/setting'
+import { getCompanyInfo, getRolesList, delRoleItem, getRoleDetail, updateRoleData, addNewRole } from '@/api/setting'
 import { mapGetters } from 'vuex'
 export default {
   data() {
@@ -155,10 +155,27 @@ export default {
       this.showDialog = true
     },
     btnCancel() {
+      // 清理表单
       this.roleForm = { name: '', description: '' }
+      // 清理校验（重新打开新增对话框无上一次校验提示）
+      this.$refs.roleForm.resetFields()
       this.showDialog = false
     },
-    btnConfirm() {
+    async btnConfirm() {
+      // 启用表单校验
+      await this.$refs.roleForm.validate()
+      // 判断roleForm中的id是否存在
+      if (this.roleForm.id) {
+        // 发送修改角色数据的请求
+        await updateRoleData(this.roleForm)
+        this.$message.success('修改成功')
+      } else {
+        // 发送新增角色数据的请求
+        await addNewRole(this.roleForm)
+        this.$message.success('新增成功')
+      }
+      // 更新角色列表数据
+      this.handleRolesList()
       this.showDialog = false
     }
   }

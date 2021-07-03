@@ -34,10 +34,19 @@ export const getRoleDetail = (id) => {
 }
 
 // 根据id更新角色数据
-export const updateRoleData = (id, data) => {
+export const updateRoleData = (data) => {
   return request({
-    url: `/sys/role/${id}`,
+    url: `/sys/role/${data.id}`,
     method: 'put',
+    data
+  })
+}
+
+// 新增角色数据
+export const addNewRole = (data) => {
+  return request({
+    url: '/sys/role',
+    method: 'post',
     data
   })
 }
