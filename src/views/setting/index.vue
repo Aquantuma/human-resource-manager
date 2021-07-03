@@ -15,7 +15,9 @@
             </el-row>
             <!-- 表格 -->
             <el-table :data="rolesList" border>
-              <el-table-column label="序号" width="120" type="index" />
+              <el-table-column label="序号" width="120" type="index">
+                <template #default="{$index}">{{ (page.page - 1) * page.pagesize + $index + 1 }}</template>
+              </el-table-column>
               <el-table-column label="名称" width="240" prop="name" />
               <el-table-column label="描述" prop="description" />
               <el-table-column label="操作">
@@ -148,6 +150,10 @@ export default {
         })
         // 提交删除请求
         await delRoleItem(id)
+        // 如果当前页码上仅有一条数据,删除后应向前翻页
+        if (this.rolesList.length === 1 && this.page.page > 1) {
+          this.page.page--
+        }
         // 重新加载角色数据
         this.handleRolesList()
         // 提示删除成功
