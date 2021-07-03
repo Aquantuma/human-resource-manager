@@ -83,6 +83,14 @@ import { getCompanyInfo, getRolesList, delRoleItem, getRoleDetail, updateRoleDat
 import { mapGetters } from 'vuex'
 export default {
   data() {
+    const checkNameRepeat = async(rule, value, callback) => {
+      const { rows } = await getRolesList({ page: 1, pagesize: this.page.total })
+      if (rows.some(item => item.name === value && item.id !== this.roleForm.id)) {
+        callback(new Error('角色名称不能重复'))
+      } else {
+        callback()
+      }
+    }
     return {
       formData: {},
       rolesList: [],
@@ -97,7 +105,10 @@ export default {
       },
       showDialog: false,
       formRules: {
-        name: [{ required: true, message: '角色名称不能为空', trigger: 'blur' }],
+        name: [
+          { required: true, message: '角色名称不能为空', trigger: 'blur' },
+          { validator: checkNameRepeat, trigger: 'blur' }
+        ],
         description: [{ required: true, message: '角色描述不能为空', trigger: 'blur' }]
       }
     }
