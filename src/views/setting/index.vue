@@ -10,6 +10,7 @@
                 type="primary"
                 icon="el-icon-plus"
                 size="small"
+                @click="addNewRole"
               >新增角色</el-button>
             </el-row>
             <!-- 表格 -->
@@ -20,7 +21,7 @@
               <el-table-column label="操作">
                 <template #default="scope">
                   <el-button size="small" type="success">分配权限</el-button>
-                  <el-button size="small" type="primary">编辑</el-button>
+                  <el-button size="small" type="primary" @click="editCurRole(scope.row.id)">编辑</el-button>
                   <el-button size="small" type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
                 </template>
               </el-table-column>
@@ -59,12 +60,26 @@
           </el-tab-pane>
         </el-tabs>
       </el-card>
+      <el-dialog :title="dialogTitle" :visible.sync="showDialog">
+        <el-form ref="roleFrom" :model="roleForm" label-width="120px" :rules="formRules">
+          <el-form-item label="角色名称" prop="name">
+            <el-input v-model="roleForm.name" autocomplete="off" />
+          </el-form-item>
+          <el-form-item label="角色描述" prop="description">
+            <el-input v-model="roleForm.description" autocomplete="off" />
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="btnCancel">取 消</el-button>
+          <el-button type="primary" @click="btnConfirm">确 定</el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
 
 <script>
-import { getCompanyInfo, getRolesList, delRoleItem } from '@/api/setting'
+import { getCompanyInfo, getRolesList, delRoleItem, getRoleDetail } from '@/api/setting'
 import { mapGetters } from 'vuex'
 export default {
   data() {
@@ -75,11 +90,23 @@ export default {
         page: 1,
         pagesize: 2,
         total: 0
+      },
+      roleForm: {
+        name: '',
+        description: ''
+      },
+      showDialog: false,
+      formRules: {
+        name: [{ required: true, message: '角色名称不能为空', trigger: 'blur' }],
+        description: [{ required: true, message: '角色描述不能为空', trigger: 'blur' }]
       }
     }
   },
   computed: {
-    ...mapGetters(['companyId'])
+    ...mapGetters(['companyId']),
+    dialogTitle() {
+      return this.roleForm.id ? '编辑角色' : '新增角色'
+    }
   },
   created() {
     this.handleComanyInfo()
@@ -96,7 +123,7 @@ export default {
       this.page.total = total
     },
     changePage(val) {
-      console.log(val)
+      // console.log(val)
       this.page.page = val
       this.handleRolesList()
     },
@@ -117,6 +144,22 @@ export default {
       } catch (error) {
         console.log(error)
       }
+    },
+    addNewRole() {
+      this.showDialog = true
+    },
+    async editCurRole(id) {
+      // console.log(id)
+      const res = await getRoleDetail(id)
+      this.roleForm = res
+      this.showDialog = true
+    },
+    btnCancel() {
+      this.roleForm = { name: '', description: '' }
+      this.showDialog = false
+    },
+    btnConfirm() {
+      this.showDialog = false
     }
   }
 }

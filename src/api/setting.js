@@ -24,3 +24,20 @@ export const delRoleItem = (id) => {
     method: 'delete'
   })
 }
+
+// 根据id获取角色详情
+export const getRoleDetail = (id) => {
+  return request({
+    url: `sys/role/${id}`,
+    method: 'get'
+  })
+}
+
+// 根据id更新角色数据
+export const updateRoleData = (id, data) => {
+  return request({
+    url: `/sys/role/${id}`,
+    method: 'put',
+    data
+  })
+}
