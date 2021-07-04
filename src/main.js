@@ -40,6 +40,18 @@ Object.keys(directives).forEach(key => {
   Vue.directive(key, directives[key])
 })
 
+// 注册全局组件 使用component方法注册
+// import PageTools from '@/components/PageTools/index'
+// Vue.component('PageTools', PageTools)
+
+// 注册全局组件 使用Vue.use方法
+import MyComponents from '@/components'
+// Vue.use调用了传入对象中的install方法，等效
+// Vue.use = (obj) => {
+//   obj.install(Vue)
+// }
+Vue.use(MyComponents)
+
 Vue.config.productionTip = false
 
 new Vue({

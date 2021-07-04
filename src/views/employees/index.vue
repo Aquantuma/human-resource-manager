@@ -14,11 +14,11 @@
 </template>
 
 <script>
-import PageTools from '@/components/PageTools'
+// import PageTools from '@/components/PageTools'
 export default {
-  components: {
+  /* components: {
     PageTools
-  }
+  } */
 }
 </script>
 
