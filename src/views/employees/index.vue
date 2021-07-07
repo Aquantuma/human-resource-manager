@@ -34,10 +34,10 @@
             </template>
           </el-table-column>
           <el-table-column label="操作" sortable="" fixed="right" width="280">
-            <template>
+            <template #default="scope">
               <el-button size="small" type="text">查看</el-button>
               <el-button size="small" type="text">角色</el-button>
-              <el-button size="small" type="text">删除</el-button>
+              <el-button size="small" type="text" @click="handleDelete(scope.row.id)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -64,7 +64,7 @@
 
 <script>
 // import PageTools from '@/components/PageTools'
-import { getEmployeesList } from '@/api/employees'
+import { getEmployeesList, deleteEmployee } from '@/api/employees'
 import employmentFormat from '@/api/constant/employees'
 import { formatDate } from '@/filters'
 // 这里引入默认加载，不使用代码也会出现在页面上
@@ -169,6 +169,20 @@ export default {
         data,
         filename: '员工数据'
       })
+    },
+    async handleDelete(id) {
+      // 询问是否删除
+      await this.$confirm('确认要删除改员工吗?')
+      // 发起删除请求
+      await deleteEmployee(id)
+      // 当前页(非第一页)只剩一条数据时，删除后应向前翻页
+      if (this.employeesList.length === 1 && this.page.page > 1) {
+        this.page.page--
+      }
+      // 提示用户删除完成
+      this.$message.success('删除成功')
+      // 重新加载员工列表
+      this.handleEmployeesList()
     }
   }
 }

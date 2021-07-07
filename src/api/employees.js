@@ -17,3 +17,11 @@ export const importEmployees = (data) => {
     data
   })
 }
+
+// 删除员工数据
+export const deleteEmployee = (id) => {
+  return request({
+    url: `/sys/user/${id}`,
+    method: 'delete'
+  })
+}
