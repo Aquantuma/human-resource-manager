@@ -52,6 +52,15 @@ import MyComponents from '@/components'
 // }
 Vue.use(MyComponents)
 
+// 注册全局过滤器
+// Vue.filter('formatDate', (val) => val.split('T')[0])
+
+// 注册预设好的过滤器
+import * as filters from '@/filters'
+Object.keys(filters).forEach(item => {
+  Vue.filter(item, filters[item])
+})
+
 Vue.config.productionTip = false
 
 new Vue({

@@ -22,7 +22,11 @@
             :formatter="formatFormEmployment"
           />
           <el-table-column label="部门" sortable="" prop="departmentName" />
-          <el-table-column label="入职时间" sortable="" prop="timeOfEntry" />
+          <el-table-column label="入职时间" sortable="" prop="timeOfEntry">
+            <template #default="scope">
+              {{ scope.row.timeOfEntry | formatDate }}
+            </template>
+          </el-table-column>
           <el-table-column label="账户状态" sortable="" prop="enableState" />
           <el-table-column label="操作" sortable="" fixed="right" width="280">
             <template>
@@ -100,7 +104,7 @@ export default {
     },
     formatFormEmployment(row, col, cellVal) {
       // console.log(employmentFormat)
-      const obj = employmentFormat.hireType.find(item => item.id === cellVal)
+      const obj = employmentFormat.hireType.find((item) => item.id === cellVal)
       return obj ? obj.value : '未知聘用形式'
     }
   }
