@@ -3,9 +3,10 @@
 </template>
 
 <script>
+import { importEmployees } from '@/api/employees'
 export default {
   methods: {
-    uploadExcel(data) {
+    async uploadExcel(data) {
       // 表头信息数组 data.header
       // 表格行信息数组 data.results
       //   console.log(data.header, data.results)
@@ -29,6 +30,11 @@ export default {
         return newEmployee
       })
       console.log(newData)
+      //   发请求添加数据
+      await importEmployees(newData)
+      this.$message.success('导入成功')
+      //   返回到上一页
+      this.$router.back()
     },
     correctExcelTime(num, char) {
       const time = new Date((num - 1) * 24 * 3600000 + 1)
@@ -39,7 +45,11 @@ export default {
       if (char && char.length === 1) {
         return year + char + month + char + date
       }
-      return year + (month < 10 ? '0' + month : month) + (date < 10 ? '0' + date : date)
+      return (
+        year +
+        (month < 10 ? '0' + month : month) +
+        (date < 10 ? '0' + date : date)
+      )
     }
   }
 }
