@@ -19,6 +19,7 @@
             label="聘用形式"
             sortable=""
             prop="formOfEmployment"
+            :formatter="formatFormEmployment"
           />
           <el-table-column label="部门" sortable="" prop="departmentName" />
           <el-table-column label="入职时间" sortable="" prop="timeOfEntry" />
@@ -41,6 +42,7 @@
           <el-pagination
             layout="total,sizes,prev,pager,next,jumper"
             :total="page.total"
+            :page-size="page.size"
             :page-sizes="[5, 10, 20, 30]"
             @current-change="pageChange"
             @size-change="sizeChange"
@@ -54,6 +56,7 @@
 <script>
 // import PageTools from '@/components/PageTools'
 import { getEmployeesList } from '@/api/employees'
+import employmentFormat from '@/api/constant/employees'
 export default {
   /* components: {
     PageTools
@@ -63,7 +66,7 @@ export default {
       employeesList: [],
       page: {
         page: 1,
-        size: 10,
+        size: 5,
         total: 0
       },
       loading: false
@@ -94,6 +97,11 @@ export default {
       this.page.size = newsize
       // 重新获取员工数据列表
       this.handleEmployeesList()
+    },
+    formatFormEmployment(row, col, cellVal) {
+      // console.log(employmentFormat)
+      const obj = employmentFormat.hireType.find(item => item.id === cellVal)
+      return obj ? obj.value : '未知聘用形式'
     }
   }
 }
