@@ -4,7 +4,7 @@
       <PageTools :show-before="true">
         <template #before>一共{{ page.total }}条数据</template>
         <template #after>
-          <el-button type="warning" size="small">导入</el-button>
+          <el-button type="warning" size="small" @click="$router.push('/import')">导入</el-button>
           <el-button type="danger" size="small">导出</el-button>
           <el-button type="primary" size="small">新增员工</el-button>
         </template>
