@@ -66,6 +66,7 @@
 // import PageTools from '@/components/PageTools'
 import { getEmployeesList } from '@/api/employees'
 import employmentFormat from '@/api/constant/employees'
+import { formatDate } from '@/filters'
 // 这里引入默认加载，不使用代码也会出现在页面上
 // import { export_json_to_excel } from '@/vendor/Export2Excel'
 export default {
@@ -138,7 +139,7 @@ export default {
         '姓名': 'username',
         '手机号': 'mobile',
         '入职日期': 'timeOfEntry',
-        '聘用日期': 'formOfEmployment',
+        '聘用形式': 'formOfEmployment',
         '转正日期': 'correctionTime',
         '工号': 'workNumber',
         '部门': 'departmentName'
@@ -149,11 +150,18 @@ export default {
       const data = rows.map(item => {
         const rowArr = []
         header.forEach(key => {
+          // 将过滤器用作函数，处理接口返回的日期格式
+          if (key === '入职日期' || key === '转正日期') {
+            item[dict[key]] = formatDate(item[dict[key]])
+          }
+          if (key === '聘用形式') {
+            const obj = employmentFormat.hireType.find(val => val.id === item[dict[key]])
+            item[dict[key]] = obj ? obj.value : '未知聘用形式'
+          }
           rowArr.push(item[dict[key]])
         })
         return rowArr
       })
-      console.log(header)
       console.log(data)
       // 调用json转excel的函数
       export_json_to_excel({
