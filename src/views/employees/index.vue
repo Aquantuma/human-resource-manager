@@ -27,7 +27,12 @@
               {{ scope.row.timeOfEntry | formatDate }}
             </template>
           </el-table-column>
-          <el-table-column label="账户状态" sortable="" prop="enableState" />
+          <el-table-column label="账户状态" sortable="" prop="enableState">
+            <template #default="{ row }">
+              <!-- 只需绑定数据，无需监听input事件 -->
+              <el-switch :value="row.enableState === 1" />
+            </template>
+          </el-table-column>
           <el-table-column label="操作" sortable="" fixed="right" width="280">
             <template>
               <el-button size="small" type="text">查看</el-button>
