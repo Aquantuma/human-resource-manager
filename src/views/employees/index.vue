@@ -11,11 +11,15 @@
       </PageTools>
       <!-- 放置表格和分页 -->
       <el-card>
-        <el-table border :data="employeesList">
+        <el-table v-loading="loading" border :data="employeesList">
           <el-table-column label="序号" sortable="" type="index" />
           <el-table-column label="姓名" sortable="" prop="username" />
           <el-table-column label="工号" sortable="" prop="workNumber" />
-          <el-table-column label="聘用形式" sortable="" prop="formOfEmployment" />
+          <el-table-column
+            label="聘用形式"
+            sortable=""
+            prop="formOfEmployment"
+          />
           <el-table-column label="部门" sortable="" prop="departmentName" />
           <el-table-column label="入职时间" sortable="" prop="timeOfEntry" />
           <el-table-column label="账户状态" sortable="" prop="enableState" />
@@ -28,8 +32,19 @@
           </el-table-column>
         </el-table>
         <!-- 分页组件 -->
-        <el-row type="flex" justify="center" align="middle" style="height:60px">
-          <el-pagination layout="prev,pager,next" />
+        <el-row
+          type="flex"
+          justify="center"
+          align="middle"
+          style="height: 60px"
+        >
+          <el-pagination
+            layout="total,sizes,prev,pager,next,jumper"
+            :total="page.total"
+            :page-sizes="[5, 10, 20, 30]"
+            @current-change="pageChange"
+            @size-change="sizeChange"
+          />
         </el-row>
       </el-card>
     </div>
@@ -50,7 +65,8 @@ export default {
         page: 1,
         size: 10,
         total: 0
-      }
+      },
+      loading: false
     }
   },
   created() {
@@ -58,15 +74,30 @@ export default {
   },
   methods: {
     async handleEmployeesList() {
+      // 开始调用获取员工列表方法时启动loading动画
+      this.loading = true
       const { rows, total } = await getEmployeesList(this.page)
       console.log(rows, total)
       this.employeesList = rows
       this.page.total = total
+      // 结束调用获取员工列表方式时关闭loading动画
+      this.loading = false
+    },
+    pageChange(newpage) {
+      // 更新数据中的当前页码
+      this.page.page = newpage
+      // 重新获取员工数据列表
+      this.handleEmployeesList()
+    },
+    sizeChange(newsize) {
+      // 更新数据中的页容量
+      this.page.size = newsize
+      // 重新获取员工数据列表
+      this.handleEmployeesList()
     }
   }
 }
 </script>
 
 <style>
-
 </style>
