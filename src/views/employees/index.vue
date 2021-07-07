@@ -5,7 +5,7 @@
         <template #before>一共{{ page.total }}条数据</template>
         <template #after>
           <el-button type="warning" size="small" @click="$router.push('/import')">导入</el-button>
-          <el-button type="danger" size="small">导出</el-button>
+          <el-button type="danger" size="small" @click="exportExcel">导出</el-button>
           <el-button type="primary" size="small">新增员工</el-button>
         </template>
       </PageTools>
@@ -66,6 +66,8 @@
 // import PageTools from '@/components/PageTools'
 import { getEmployeesList } from '@/api/employees'
 import employmentFormat from '@/api/constant/employees'
+// 这里引入默认加载，不使用代码也会出现在页面上
+// import { export_json_to_excel } from '@/vendor/Export2Excel'
 export default {
   /* components: {
     PageTools
@@ -111,6 +113,54 @@ export default {
       // console.log(employmentFormat)
       const obj = employmentFormat.hireType.find((item) => item.id === cellVal)
       return obj ? obj.value : '未知聘用形式'
+    },
+    async exportExcel() {
+      // 使用import函数加载json转excel的函数
+      // 点击导出按钮时才会载入此函数
+      const { export_json_to_excel } = await import('@/vendor/Export2Excel')
+      console.log(export_json_to_excel)
+      // 导出函数需传入带有header和data键名的对象，且均为数组
+      // export_json_to_excel({
+      //   header: ['姓名', '年龄', '性别'],
+      //   data: [
+      //     ['Tom', 20, '男'],
+      //     ['Jane', 18, '女'],
+      //     ['Mick', 22, '男']
+      //   ]
+      // })
+
+      // 获取全部的员工数据
+      const { rows } = await getEmployeesList({ page: 1, size: this.page.total })
+      // console.log(rows)
+
+      // 定义中英文键名互转的字典
+      const dict = {
+        '姓名': 'username',
+        '手机号': 'mobile',
+        '入职日期': 'timeOfEntry',
+        '聘用日期': 'formOfEmployment',
+        '转正日期': 'correctionTime',
+        '工号': 'workNumber',
+        '部门': 'departmentName'
+      }
+      // 按照dict键名的顺序将其存入header数组
+      const header = Object.keys(dict)
+      // 将员工数据转换成二维数组
+      const data = rows.map(item => {
+        const rowArr = []
+        header.forEach(key => {
+          rowArr.push(item[dict[key]])
+        })
+        return rowArr
+      })
+      console.log(header)
+      console.log(data)
+      // 调用json转excel的函数
+      export_json_to_excel({
+        header,
+        data,
+        filename: '员工数据'
+      })
     }
   }
 }
