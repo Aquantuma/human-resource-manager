@@ -6,7 +6,7 @@
         <template #after>
           <el-button type="warning" size="small" @click="$router.push('/import')">导入</el-button>
           <el-button type="danger" size="small" @click="exportExcel">导出</el-button>
-          <el-button type="primary" size="small">新增员工</el-button>
+          <el-button type="primary" size="small" @click="showDialog=true">新增员工</el-button>
         </template>
       </PageTools>
       <!-- 放置表格和分页 -->
@@ -58,6 +58,7 @@
           />
         </el-row>
       </el-card>
+      <AddEmployee :show-dialog="showDialog" />
     </div>
   </div>
 </template>
@@ -69,10 +70,11 @@ import employmentFormat from '@/api/constant/employees'
 import { formatDate } from '@/filters'
 // 这里引入默认加载，不使用代码也会出现在页面上
 // import { export_json_to_excel } from '@/vendor/Export2Excel'
+import AddEmployee from '@/views/employees/components/add-employee.vue'
 export default {
-  /* components: {
-    PageTools
-  } */
+  components: {
+    AddEmployee
+  },
   data() {
     return {
       employeesList: [],
@@ -81,7 +83,8 @@ export default {
         size: 5,
         total: 0
       },
-      loading: false
+      loading: false,
+      showDialog: false
     }
   },
   created() {
