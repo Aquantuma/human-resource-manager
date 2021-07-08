@@ -4,9 +4,9 @@
     this.$emit("update:visible", false)
     因为我们这里的visible后面的值是一个 props属性 props 是父组件的属性 是在子组件中只读的
   -->
-  <el-dialog title="新增员工" :visible="showDialog">
+  <el-dialog title="新增员工" :visible="showDialog" @close="btnCancel">
     <!-- 表单 -->
-    <el-form label-width="120px" :model="formData" :rules="formRules">
+    <el-form ref="employeeForm" label-width="120px" :model="formData" :rules="formRules">
       <el-form-item label="姓名" prop="username">
         <el-input
           v-model="formData.username"
@@ -33,7 +33,14 @@
           v-model="formData.formOfEmployment"
           style="width: 90%"
           placeholder="请选择"
-        />
+        >
+          <el-option
+            v-for="item in employmentFormat.hireType"
+            :key="item.id"
+            :label="item.value"
+            :value="item.id"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="工号" prop="workNumber">
         <el-input
@@ -47,6 +54,14 @@
           v-model="formData.departmentName"
           style="width: 90%"
           placeholder="请选择部门"
+          @focus="handleFocus"
+        />
+        <el-tree
+          v-if="showTree"
+          :data="treeList"
+          :props="{ label: 'name' }"
+          :default-expand-all="true"
+          @node-click="chooseDepts"
         />
       </el-form-item>
       <el-form-item label="转正时间" prop="correctionTime">
@@ -61,8 +76,8 @@
     <template #footer>
       <el-row type="flex" justify="center" align="middle">
         <el-col :span="6">
-          <el-button type="primary" size="small">确定</el-button>
-          <el-button size="small">取消</el-button>
+          <el-button type="primary" size="small" @click="btnConfirm">确定</el-button>
+          <el-button size="small" @click="btnCancel">取消</el-button>
         </el-col>
       </el-row>
     </template>
@@ -70,6 +85,10 @@
 </template>
 
 <script>
+import { getDepartments } from '@/api/departments'
+import { listToTreeData } from '@/utils/index'
+import employmentFormat from '@/api/constant/employees'
+import { addEmployee } from '@/api/employees'
 export default {
   props: {
     showDialog: {
@@ -105,15 +124,57 @@ export default {
         formOfEmployment: [
           { required: true, trigger: 'blur', message: '聘用形式不能为空' }
         ],
-        workNumber: [{ required: true, trigger: 'blur', message: '工号不能为空' }],
+        workNumber: [
+          { required: true, trigger: 'blur', message: '工号不能为空' }
+        ],
         departmentName: [
           { required: true, trigger: 'change', message: '部门不能为空' }
         ]
-      }
+      },
+      treeList: [],
+      showTree: false,
+      employmentFormat
+    }
+  },
+  methods: {
+    async handleFocus() {
+      const { depts } = await getDepartments()
+      this.treeList = listToTreeData(depts, '')
+      this.showTree = true
+    },
+    chooseDepts(data) {
+      console.log(data.name)
+      this.formData.departmentName = data.name
+      this.showTree = false
+    },
+    async btnConfirm() {
+      // 验证表单
+      await this.$refs.employeeForm.validate()
+      // 发起添加员工数据的请求
+      await addEmployee(this.formData)
+      // 提示添加成功
+      this.$message('添加成功')
+      // 父组件重新加载员工列表
+      this.$parent.handleEmployeesList()
+      // 关闭对话框
+      this.$parent.showDialog = false
+    },
+    btnCancel() {
+      this.$refs.employeeForm.resetFields()
+      this.$parent.showDialog = false
     }
   }
 }
 </script>
 
 <style>
+.el-tree {
+  position: absolute;
+  z-index: 10;
+  width: 90%;
+  height: 200px;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+  overflow: auto;
+}
 </style>
