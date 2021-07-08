@@ -169,7 +169,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .el-tree {
   position: absolute;
   z-index: 10;

@@ -5,15 +5,15 @@
         <el-tabs>
           <el-tab-pane label="登录账户设置">
             <!-- 放置表单 -->
-            <el-form label-width="120px" style="margin-left: 120px; margin-top:30px" :data="formData" :rules="formRules">
+            <el-form label-width="120px" style="margin-left: 120px; margin-top:30px" :model="formData" :rules="formRules">
               <el-form-item label="姓名:" prop="username">
                 <el-input v-model="formData.username" style="width:300px" />
               </el-form-item>
-              <el-form-item label="密码:" prop="password">
-                <el-input v-model="formData.password" style="width:300px" type="password" />
+              <el-form-item label="密码:" prop="newPassword">
+                <el-input v-model="formData.newPassword" style="width:300px" type="password" />
               </el-form-item>
               <el-form-item>
-                <el-button type="primary">更新</el-button>
+                <el-button type="primary" @click="updateAccountInfo">更新</el-button>
               </el-form-item>
             </el-form>
           </el-tab-pane>
@@ -27,18 +27,19 @@
 
 <script>
 import { getUserDetail } from '@/api/user'
+import { saveUserDetail } from '@/api/employees'
 export default {
   data() {
     return {
       formData: {
         username: '',
-        password: ''
+        newPassword: ''
       },
       formRules: {
         username: [
           { required: true, message: '该项不能为空', trigger: 'blur' }
         ],
-        password: [
+        newPassword: [
           { required: true, message: '该项不能为空', trigger: 'blur' }
         ]
       },
@@ -52,6 +53,11 @@ export default {
     async handleUserDetail() {
       const res = await getUserDetail(this.userId)
       this.formData = res
+    },
+    async updateAccountInfo() {
+    //   console.log({ ...this.formData, password: this.formData.newPassword })
+      await saveUserDetail({ ...this.formData, password: this.formData.newPassword })
+      this.$message.success('修改成功')
     }
   }
 }
