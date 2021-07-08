@@ -115,7 +115,7 @@ export default {
     },
     formatFormEmployment(row, col, cellVal) {
       // console.log(employmentFormat)
-      const obj = employmentFormat.hireType.find((item) => item.id === cellVal)
+      const obj = employmentFormat.hireType.find((item) => item.id === Number(cellVal))
       return obj ? obj.value : '未知聘用形式'
     },
     async exportExcel() {

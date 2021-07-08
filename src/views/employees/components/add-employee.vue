@@ -160,7 +160,9 @@ export default {
       this.$parent.showDialog = false
     },
     btnCancel() {
+      // 清空表单数据和表单校验的提示
       this.$refs.employeeForm.resetFields()
+      // 关闭对话框
       this.$parent.showDialog = false
     }
   }
