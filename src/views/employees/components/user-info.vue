@@ -72,7 +72,7 @@
       </el-row>
     </el-form>
     <!-- 基础信息 -->
-    <el-form label-width="220px">
+    <el-form label-width="220px" :model="formData" :rules="formRules">
       <div class="block">
         <div class="title">基础信息</div>
         <el-form-item label="最高学历">
@@ -198,8 +198,8 @@
         <el-form-item label="通讯地址">
           <el-input v-model="formData.postalAddress" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="联系手机">
-          <el-input v-model="formData.contactTheMobilePhone" placeholder="11位字符" maxlength="11" class="inputW" @change.native="handlePhone(2)" />
+        <el-form-item label="联系手机" prop="contactTheMobilePhone">
+          <el-input v-model="formData.contactTheMobilePhone" placeholder="11位字符" maxlength="11" class="inputW" />
         </el-form-item>
         <el-form-item label="个人邮箱">
           <el-input v-model="formData.personalMailbox" placeholder="请输入" type="mail" class="inputW" />
@@ -352,6 +352,11 @@ export default {
         isThereAnyCompetitionRestriction: '', // 有无竞业限制
         proofOfDepartureOfFormerCompany: '', // 前公司离职证明
         remarks: '' // 备注
+      },
+      formRules: {
+        contactTheMobilePhone: [
+          { pattern: /^1[3-9]\d{9}$/, message: '手机号不合法', trigger: 'blur' }
+        ]
       }
     }
   },
