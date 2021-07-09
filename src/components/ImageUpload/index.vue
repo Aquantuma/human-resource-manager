@@ -24,6 +24,13 @@
     >
       <i class="el-icon-plus" />
     </el-upload>
+    <el-progress
+      v-if="showProgress"
+      :show-text="false"
+      :stroke-width="8"
+      :percentage="percentage"
+      style="width: 148px"
+    />
 
     <el-dialog title="预览" :visible="showDialog" @close="showDialog = false">
       <el-row type="flex" justify="center">
@@ -43,12 +50,14 @@ export default {
   data() {
     return {
       fileList: [
-        {
-          url: 'https://img0.baidu.com/it/u=2164845441,520462980&fm=26&fmt=auto&gp=0.jpg'
-        }
+        // {
+        //   url: 'https://img0.baidu.com/it/u=2164845441,520462980&fm=26&fmt=auto&gp=0.jpg'
+        // }
       ],
       showDialog: false,
-      previewUrl: ''
+      previewUrl: '',
+      showProgress: false,
+      percentage: 0
     }
   },
   methods: {
@@ -64,7 +73,7 @@ export default {
       this.fileList = [...newFileList]
     },
     beforeUpload(file) {
-      console.log(file)
+      // console.log(file)
       const types = ['image/jpeg', 'image/png', 'image/gif']
       const maxSize = 2 * 1024 * 1024
       // 拦截格式
@@ -80,27 +89,46 @@ export default {
     },
     upload(params) {
       console.log(params)
-      cos.putObject({
-        // 存储桶的名称，必须字段
-        Bucket: 'human-resource-1306481102',
-        // 存储桶的地域，必须字段
-        Region: 'ap-guangzhou',
-        // 对象在存储桶中的唯一标识，必须字段，可以是文件名
-        Key: params.file.name,
-        // 设置对象的存储类型，默认为STANDARD
-        StorageClass: 'STANDARD',
-        // 上传文件的内容
-        Body: params.file
-      }, (err, data) => {
-        console.log(err || data)
-      })
+      // 显示进度条
+      this.showProgress = true
+      cos.putObject(
+        {
+          // 存储桶的名称，必须字段
+          Bucket: 'human-resource-1306481102',
+          // 存储桶的地域，必须字段
+          Region: 'ap-guangzhou',
+          // 对象在存储桶中的唯一标识，必须字段，可以是文件名
+          Key: params.file.name,
+          // 设置对象的存储类型，默认为STANDARD
+          StorageClass: 'STANDARD',
+          // 上传文件的内容
+          Body: params.file,
+          onProgress: (progressData) => {
+            console.log(JSON.stringify(progressData))
+            this.percentage = progressData.percent * 100
+          }
+        },
+        (err, data) => {
+          console.log(err || data)
+          if (!err) {
+            // 用这个异步上传完毕的地址，替换fileList当中的url
+            this.fileList[0].url = 'https://' + data.Location
+            // 显示上传成功的角标
+            this.fileList[0].status = 'success'
+          }
+          // 延迟500毫秒关闭进度条
+          setTimeout(() => {
+            this.showProgress = false
+          }, 500)
+        }
+      )
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-::v-deep img{
+::v-deep img {
   object-fit: contain;
 }
 .disable {
