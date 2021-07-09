@@ -58,7 +58,7 @@
         <el-col :span="12">
           <el-form-item label="员工头像">
             <!-- 放置上传图片 -->
-
+            <ImageUpload ref="userInfoPhoto" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -90,6 +90,7 @@
 
         <el-form-item label="员工照片">
           <!-- 放置上传图片 -->
+          <ImageUpload ref="formDataPhoto" />
         </el-form-item>
         <el-form-item label="国家/地区">
           <el-select v-model="formData.nationalArea" class="inputW2">
@@ -367,18 +368,35 @@ export default {
   methods: {
     async getPersonalDetail() {
       this.formData = await getPersonalDetail(this.userId)
+      // 获取完数据，将服务器返回的图片地址存入上传组件以供回显
+      if (this.formData.staffPhoto) {
+        this.$refs.formDataPhoto.fileList.push({ url: this.formData.staffPhoto })
+      }
     },
     async savePersonal() {
-      await updatePersonal({ ...this.formData, id: this.userId })
+      const fileList = this.$refs.formDataPhoto.fileList
+      if (fileList[0] && fileList[0].status !== 'success') {
+        this.$message.warning('请等待图片上传完成！')
+      }
+      // 将上传组件中的云服务器图片地址作为请求数据向服务器发起修改请求
+      await updatePersonal({ ...this.formData, id: this.userId, staffPhoto: fileList[0] ? fileList[0].url : '' })
       this.$message.success('保存成功')
     },
     async saveUser() {
-      // 调用父组件
-      await saveUserDetail(this.userInfo)
+      const fileList = this.$refs.userInfoPhoto.fileList
+      if (fileList[0] && fileList[0].status !== 'success') {
+        this.$message.warning('请等待图片上传完成！')
+      }
+      // 将上传组件中的云服务器图片地址作为请求数据向服务器发起修改请求
+      await saveUserDetail({ ...this.userInfo, staffPhoto: fileList[0] ? fileList[0].url : '' })
       this.$message.success('保存成功')
     },
     async getUserDetail() {
       this.userInfo = await getUserDetail(this.userId)
+      // 获取完数据，将服务器返回的图片地址存入上传组件以供回显
+      if (this.userInfo.staffPhoto) {
+        this.$refs.userInfoPhoto.fileList.push({ url: this.userInfo.staffPhoto })
+      }
     }
   }
 }
