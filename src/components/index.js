@@ -1,5 +1,6 @@
 import PageTools from './PageTools/index.vue'
 import UploadExcel from './UploadExcel/index.vue'
+import ImageUpload from '@/components/ImageUpload'
 
 export default {
   install(Vue) {
@@ -8,5 +9,6 @@ export default {
     // 需要注册的组件在这里写
     Vue.component('PageTools', PageTools)
     Vue.component('UploadExcel', UploadExcel)
+    Vue.component('ImageUpload', ImageUpload)
   }
 }
