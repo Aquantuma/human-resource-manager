@@ -37,7 +37,7 @@
       <el-row class="inline-info">
         <el-col :span="12">
           <el-form-item label="手机">
-            <el-input v-model="userInfo.mobile" />
+            <el-input v-model="userInfo.mobile" disabled />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -282,6 +282,8 @@
 
 <script>
 import EmployeeEnum from '@/api/constant/employees'
+import { getPersonalDetail, updatePersonal, saveUserDetail } from '@/api/employees'
+import { getUserDetail } from '@/api/user'
 export default {
   data() {
     return {
@@ -353,9 +355,26 @@ export default {
       }
     }
   },
+  created() {
+    this.getPersonalDetail()
+    this.getUserDetail()
+  },
   methods: {
-    saveUser() {},
-    savePersonal() {}
+    async getPersonalDetail() {
+      this.formData = await getPersonalDetail(this.userId)
+    },
+    async savePersonal() {
+      await updatePersonal({ ...this.formData, id: this.userId })
+      this.$message.success('保存成功')
+    },
+    async saveUser() {
+      // 调用父组件
+      await saveUserDetail(this.userInfo)
+      this.$message.success('保存成功')
+    },
+    async getUserDetail() {
+      this.userInfo = await getUserDetail(this.userId)
+    }
   }
 }
 </script>
