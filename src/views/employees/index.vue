@@ -41,7 +41,7 @@
           <el-table-column label="操作" sortable="" fixed="right" width="280">
             <template #default="scope">
               <el-button size="small" type="text" @click="$router.push(`/employees/detail/${scope.row.id}`)">查看</el-button>
-              <el-button size="small" type="text">角色</el-button>
+              <el-button size="small" type="text" @click="assignRole(scope.row.id)">角色</el-button>
               <el-button size="small" type="text" @click="handleDelete(scope.row.id)">删除</el-button>
             </template>
           </el-table-column>
@@ -63,12 +63,16 @@
           />
         </el-row>
       </el-card>
+      <!-- 添加员工 -->
       <AddEmployee :show-dialog="showDialog" />
+      <!-- 显示头像的二维码 -->
       <el-dialog :visible="showQRCode" title="二维码" @close="showQRCode=false">
         <el-row type="flex" justify="center">
           <canvas ref="myCanvas" />
         </el-row>
       </el-dialog>
+      <!-- 分配角色 -->
+      <AssignRole ref="assignRole" :show-role-dialog.sync="showRoles" />
     </div>
   </div>
 </template>
@@ -82,9 +86,11 @@ import { formatDate } from '@/filters'
 // import { export_json_to_excel } from '@/vendor/Export2Excel'
 import AddEmployee from '@/views/employees/components/add-employee.vue'
 import qrcode from 'qrcode'
+import AssignRole from './components/assign-role.vue'
 export default {
   components: {
-    AddEmployee
+    AddEmployee,
+    AssignRole
   },
   data() {
     return {
@@ -96,7 +102,8 @@ export default {
       },
       loading: false,
       showDialog: false,
-      showQRCode: false
+      showQRCode: false,
+      showRoles: false
     }
   },
   created() {
@@ -214,6 +221,10 @@ export default {
           })
         })
       }
+    },
+    assignRole(id) {
+      this.$refs.assignRole.getUserDetailById(id)
+      this.showRoles = true
     }
   }
 }
