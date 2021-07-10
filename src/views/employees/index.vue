@@ -15,7 +15,7 @@
           <el-table-column label="序号" sortable="" type="index" />
           <el-table-column label="头像" prop="staffPhoto" align="center">
             <template #default="{row}">
-              <img v-imgerr="require('@/assets/common/head.jpg')" :src="row.staffPhoto" class="portrait">
+              <img v-imgerr="require('@/assets/common/head.jpg')" :src="row.staffPhoto" class="portrait" @click="toggleQRCode(row.staffPhoto)">
             </template>
           </el-table-column>
           <el-table-column label="姓名" sortable="" prop="username" />
@@ -64,6 +64,11 @@
         </el-row>
       </el-card>
       <AddEmployee :show-dialog="showDialog" />
+      <el-dialog :visible="showQRCode" title="二维码" @close="showQRCode=false">
+        <el-row type="flex" justify="center">
+          <canvas ref="myCanvas" />
+        </el-row>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -76,6 +81,7 @@ import { formatDate } from '@/filters'
 // 这里引入默认加载，不使用代码也会出现在页面上
 // import { export_json_to_excel } from '@/vendor/Export2Excel'
 import AddEmployee from '@/views/employees/components/add-employee.vue'
+import qrcode from 'qrcode'
 export default {
   components: {
     AddEmployee
@@ -89,7 +95,8 @@ export default {
         total: 0
       },
       loading: false,
-      showDialog: false
+      showDialog: false,
+      showQRCode: false
     }
   },
   created() {
@@ -191,6 +198,22 @@ export default {
       this.$message.success('删除成功')
       // 重新加载员工列表
       this.handleEmployeesList()
+    },
+    toggleQRCode(url) {
+      if (url) {
+        // 显示对话框
+        this.showQRCode = true
+        // 等到渲染完毕，有弹窗了，再生成二维码
+        this.$nextTick(() => {
+          qrcode.toCanvas(this.$refs.myCanvas, url, {
+            width: 200,
+            color: {
+              dark: '#4A7BFB',
+              light: '#eee'
+            }
+          })
+        })
+      }
     }
   }
 }
