@@ -72,7 +72,7 @@
         </el-row>
       </el-dialog>
       <!-- 分配角色 -->
-      <AssignRole ref="assignRole" :show-role-dialog.sync="showRoles" />
+      <AssignRole ref="assignRole" :show-role-dialog.sync="showRoles" :user-id="userId" />
     </div>
   </div>
 </template>
@@ -103,7 +103,8 @@ export default {
       loading: false,
       showDialog: false,
       showQRCode: false,
-      showRoles: false
+      showRoles: false,
+      userId: ''
     }
   },
   created() {
@@ -223,6 +224,8 @@ export default {
       }
     },
     assignRole(id) {
+      // 传递员工共id
+      this.userId = id
       this.$refs.assignRole.getUserDetailById(id)
       this.showRoles = true
     }
