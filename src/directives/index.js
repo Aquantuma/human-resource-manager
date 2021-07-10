@@ -7,5 +7,9 @@ export const imgerr = {
       // console.log(el.src)
       el.src = option.value
     }
+  },
+  componentUpdated(el, option) {
+    // 页面更新时触发
+    el.src = el.src || option.value
   }
 }

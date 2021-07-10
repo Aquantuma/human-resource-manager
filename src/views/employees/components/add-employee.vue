@@ -153,7 +153,7 @@ export default {
       // 发起添加员工数据的请求
       await addEmployee(this.formData)
       // 提示添加成功
-      this.$message('添加成功')
+      this.$message.success('添加成功')
       // 父组件重新加载员工列表
       this.$parent.handleEmployeesList()
       // 关闭对话框

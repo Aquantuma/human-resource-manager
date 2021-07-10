@@ -13,6 +13,11 @@
       <el-card>
         <el-table v-loading="loading" border :data="employeesList">
           <el-table-column label="序号" sortable="" type="index" />
+          <el-table-column label="头像" prop="staffPhoto" align="center">
+            <template #default="{row}">
+              <img v-imgerr="require('@/assets/common/head.jpg')" :src="row.staffPhoto" class="portrait">
+            </template>
+          </el-table-column>
           <el-table-column label="姓名" sortable="" prop="username" />
           <el-table-column label="工号" sortable="" prop="workNumber" />
           <el-table-column
@@ -191,5 +196,14 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+.el-table{
+  .cell{
+    .portrait{
+      width: 90%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+  }
+}
 </style>
