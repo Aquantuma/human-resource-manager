@@ -44,9 +44,15 @@ router.beforeEach(async(to, from, next) => {
       // 拿到数据，在页面跳转前，进行路由权限的筛选
       const res = await store.dispatch('permission/filterRoutes', store.state.user.userInfo.roles.menus)
       console.log(res)
-      router.addRoutes(res)
+      router.addRoutes([
+        ...res,
+        { path: '*', redirect: '/404', hidden: true }
+      ])
+      // 追加路由后需要重新匹配跳转路径
+      next(to.path)
+    } else {
+      next()
     }
-    next()
   }
 
   //   无token + 打开白名单页面 => 放行

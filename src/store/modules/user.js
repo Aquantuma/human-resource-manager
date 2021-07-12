@@ -1,5 +1,6 @@
 import { login, getUserInfo, getUserDetail } from '@/api/user'
 import { setToken, getToken, removeToken, setTimeStamp } from '@/utils/auth'
+import { resetRouter } from '@/router'
 const state = {
   token: getToken(),
   userInfo: {}
@@ -46,6 +47,11 @@ const actions = {
     store.commit('setUserInfo', data)
   },
   logout(store) {
+    // 登出时重置路由
+    resetRouter()
+    // 子模块调用子模块的action可以将commit的第三个参数设置成{ root:true }
+    // 表示当前的store不是子模块了，而是父模块
+    store.commit('permission/setRoutes', [], { root: true })
     // 清空state和cookies中的token
     store.commit('removeToken')
     // 清空state中的用户信息
