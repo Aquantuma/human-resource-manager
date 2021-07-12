@@ -19,7 +19,7 @@
             <el-button
               type="text"
               :disabled="scope.row.type === 2"
-              @click="addPermission(2, scope.row.pid)"
+              @click="addPermission(2, scope.row.id)"
             >添加</el-button>
             <el-button
               type="text"

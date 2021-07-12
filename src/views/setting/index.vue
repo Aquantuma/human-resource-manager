@@ -10,6 +10,7 @@
                 type="primary"
                 icon="el-icon-plus"
                 size="small"
+                :disabled="!checkPermission('addRole')"
                 @click="addNewRole"
               >新增角色</el-button>
             </el-row>
@@ -27,11 +28,13 @@
                   <el-button
                     size="small"
                     type="success"
+                    :disabled="!checkPermission('assignPermission')"
                     @click="assignPermission(scope.row.id)"
                   >分配权限</el-button>
                   <el-button
                     size="small"
                     type="primary"
+                    :disabled="!checkPermission('editRole')"
                     @click="editCurRole(scope.row.id)"
                   >编辑</el-button>
                   <el-button
@@ -320,6 +323,9 @@ export default {
       // 清空已选树形节点
       this.$refs.permTree.setCheckedKeys([])
       this.showPermDialog = false
+    },
+    checkPermission(point) {
+      return this.$store.state.user.userInfo.roles.points.includes(point)
     }
   }
 }
