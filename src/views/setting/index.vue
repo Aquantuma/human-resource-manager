@@ -323,10 +323,10 @@ export default {
       // 清空已选树形节点
       this.$refs.permTree.setCheckedKeys([])
       this.showPermDialog = false
-    },
-    checkPermission(point) {
-      return this.$store.state.user.userInfo.roles.points.includes(point)
     }
+    // checkPermission(point) {
+    //   return this.$store.state.user.userInfo.roles.points.includes(point)
+    // }
   }
 }
 </script>

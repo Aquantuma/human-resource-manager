@@ -61,6 +61,10 @@ Object.keys(filters).forEach(item => {
   Vue.filter(item, filters[item])
 })
 
+// 全局混合类型的引入
+import { checkPermission } from '@/mixin'
+Vue.mixin(checkPermission)
+
 Vue.config.productionTip = false
 
 new Vue({
