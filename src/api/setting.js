@@ -50,3 +50,12 @@ export const addNewRole = (data) => {
     data
   })
 }
+
+// 给角色分配权限
+export const assignPermission = (data) => {
+  return request({
+    url: '/sys/role/assignPrem',
+    method: 'put',
+    data
+  })
+}

@@ -16,15 +16,29 @@
             <!-- 表格 -->
             <el-table :data="rolesList" border>
               <el-table-column label="序号" width="120" type="index">
-                <template #default="{$index}">{{ (page.page - 1) * page.pagesize + $index + 1 }}</template>
+                <template #default="{ $index }">{{
+                  (page.page - 1) * page.pagesize + $index + 1
+                }}</template>
               </el-table-column>
               <el-table-column label="名称" width="240" prop="name" />
               <el-table-column label="描述" prop="description" />
               <el-table-column label="操作">
                 <template #default="scope">
-                  <el-button size="small" type="success">分配权限</el-button>
-                  <el-button size="small" type="primary" @click="editCurRole(scope.row.id)">编辑</el-button>
-                  <el-button size="small" type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
+                  <el-button
+                    size="small"
+                    type="success"
+                    @click="assignPermission(scope.row.id)"
+                  >分配权限</el-button>
+                  <el-button
+                    size="small"
+                    type="primary"
+                    @click="editCurRole(scope.row.id)"
+                  >编辑</el-button>
+                  <el-button
+                    size="small"
+                    type="danger"
+                    @click="handleDelete(scope.row.id)"
+                  >删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -35,7 +49,13 @@
               align="middle"
               style="height: 60px"
             >
-              <el-pagination background layout="prev,pager,next" :total="page.total" :page-size="page.pagesize" @current-change="changePage" />
+              <el-pagination
+                background
+                layout="prev,pager,next"
+                :total="page.total"
+                :page-size="page.pagesize"
+                @current-change="changePage"
+              />
             </el-row>
           </el-tab-pane>
           <el-tab-pane label="公司信息">
@@ -45,25 +65,52 @@
               show-icon
               :closable="false"
             />
-            <el-form label-width="120px" style="margin-top:50px">
+            <el-form label-width="120px" style="margin-top: 50px">
               <el-form-item label="公司名称">
-                <el-input v-model="formData.name" disabled style="width:400px" />
+                <el-input
+                  v-model="formData.name"
+                  disabled
+                  style="width: 400px"
+                />
               </el-form-item>
               <el-form-item label="公司地址">
-                <el-input v-model="formData.companyAddress" disabled style="width:400px" />
+                <el-input
+                  v-model="formData.companyAddress"
+                  disabled
+                  style="width: 400px"
+                />
               </el-form-item>
               <el-form-item label="公司邮箱">
-                <el-input v-model="formData.mailbox" disabled style="width:400px" />
+                <el-input
+                  v-model="formData.mailbox"
+                  disabled
+                  style="width: 400px"
+                />
               </el-form-item>
               <el-form-item label="备注">
-                <el-input v-model="formData.remarks" type="textarea" :rows="3" disabled style="width:400px" />
+                <el-input
+                  v-model="formData.remarks"
+                  type="textarea"
+                  :rows="3"
+                  disabled
+                  style="width: 400px"
+                />
               </el-form-item>
             </el-form>
           </el-tab-pane>
         </el-tabs>
       </el-card>
-      <el-dialog :title="dialogTitle" :visible.sync="showDialog" @close="btnCancel">
-        <el-form ref="roleForm" :model="roleForm" label-width="120px" :rules="formRules">
+      <el-dialog
+        :title="dialogTitle"
+        :visible.sync="showDialog"
+        @close="btnCancel"
+      >
+        <el-form
+          ref="roleForm"
+          :model="roleForm"
+          label-width="120px"
+          :rules="formRules"
+        >
           <el-form-item label="角色名称" prop="name">
             <el-input v-model="roleForm.name" autocomplete="off" />
           </el-form-item>
@@ -72,22 +119,65 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="btnCancel">取 消</el-button>
           <el-button type="primary" @click="btnConfirm">确 定</el-button>
+          <el-button @click="btnCancel">取 消</el-button>
         </div>
+      </el-dialog>
+      <el-dialog
+        title="分配权限"
+        :visible="showPermDialog"
+        @close="btnPermCancel"
+      >
+        <el-tree
+          ref="permTree"
+          :data="permissionList"
+          :show-checkbox="true"
+          :check-strictly="true"
+          node-key="id"
+          :default-expand-all="true"
+          :props="{ label: 'name' }"
+        />
+        <!-- 确定和取消按钮 -->
+        <template #footer>
+          <el-row type="flex" justify="center">
+            <el-col :span="6">
+              <el-button
+                type="primary"
+                size="small"
+                @click="btnPermOK"
+              >确定</el-button>
+              <el-button size="small" @click="btnPermCancel">取消</el-button>
+            </el-col>
+          </el-row>
+        </template>
       </el-dialog>
     </div>
   </div>
 </template>
 
 <script>
-import { getCompanyInfo, getRolesList, delRoleItem, getRoleDetail, updateRoleData, addNewRole } from '@/api/setting'
+import {
+  getCompanyInfo,
+  getRolesList,
+  delRoleItem,
+  getRoleDetail,
+  updateRoleData,
+  addNewRole,
+  assignPermission
+} from '@/api/setting'
 import { mapGetters } from 'vuex'
+import { getPermissionList } from '@/api/permission'
+import { listToTreeData } from '@/utils/index'
 export default {
   data() {
     const checkNameRepeat = async(rule, value, callback) => {
-      const { rows } = await getRolesList({ page: 1, pagesize: this.page.total })
-      if (rows.some(item => item.name === value && item.id !== this.roleForm.id)) {
+      const { rows } = await getRolesList({
+        page: 1,
+        pagesize: this.page.total
+      })
+      if (
+        rows.some((item) => item.name === value && item.id !== this.roleForm.id)
+      ) {
         callback(new Error('角色名称不能重复'))
       } else {
         callback()
@@ -111,8 +201,14 @@ export default {
           { required: true, message: '角色名称不能为空', trigger: 'blur' },
           { validator: checkNameRepeat, trigger: 'blur' }
         ],
-        description: [{ required: true, message: '角色描述不能为空', trigger: 'blur' }]
-      }
+        description: [
+          { required: true, message: '角色描述不能为空', trigger: 'blur' }
+        ]
+      },
+      permissionList: [],
+      checkedPermissionList: [],
+      showPermDialog: false,
+      roleId: ''
     }
   },
   computed: {
@@ -194,6 +290,36 @@ export default {
       // 更新角色列表数据
       this.handleRolesList()
       this.showDialog = false
+    },
+    async assignPermission(id) {
+      // 获取全部的权限列表
+      const res = await getPermissionList()
+      this.permissionList = listToTreeData(res, '0')
+      // 获取当前角色的权限
+      const { permIds } = await getRoleDetail(id)
+      this.checkedPermissionList = permIds
+      // 弹出分配权限对话框
+      this.showPermDialog = true
+      this.roleId = id
+      this.$nextTick(() => {
+        this.$refs.permTree.setCheckedKeys(this.checkedPermissionList)
+      })
+    },
+    async btnPermOK() {
+      // 发送请求
+      await assignPermission({
+        id: this.roleId,
+        permIds: this.$refs.permTree.getCheckedKeys()
+      })
+      // 提醒用户
+      this.$message.success('分配权限成功')
+      // 关闭弹窗
+      this.showPermDialog = false
+    },
+    btnPermCancel() {
+      // 清空已选树形节点
+      this.$refs.permTree.setCheckedKeys([])
+      this.showPermDialog = false
     }
   }
 }
