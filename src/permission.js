@@ -41,6 +41,10 @@ router.beforeEach(async(to, from, next) => {
     // 且用户信息保存在state状态后就不再重复获取了
     if (!store.getters.userId) {
       await store.dispatch('user/handleUserInfo')
+      // 拿到数据，在页面跳转前，进行路由权限的筛选
+      const res = await store.dispatch('permission/filterRoutes', store.state.user.userInfo.roles.menus)
+      console.log(res)
+      router.addRoutes(res)
     }
     next()
   }

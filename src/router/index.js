@@ -102,7 +102,10 @@ export const asyncRoutes = [
 const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
-  routes: [...constantRoutes, ...asyncRoutes]
+  // routes: [...constantRoutes, ...asyncRoutes]
+  // 创建路由时，只带上静态路由，默认情况下，所有人只能看到静态路由
+  // 动态路由通过导航守卫过滤权限后添加过来
+  routes: constantRoutes
 })
 
 const router = createRouter()

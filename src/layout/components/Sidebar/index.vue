@@ -31,7 +31,9 @@ export default {
       'sidebar'
     ]),
     routes() {
-      return this.$router.options.routes
+      // return this.$router.options.routes
+      // 使用筛选后的路由
+      return this.$store.state.permission.routes
     },
     activeMenu() {
       const route = this.$route
